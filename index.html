@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регрессионный анализ | Современный дизайн</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+            color: #e0e4e9;
+            line-height: 1.6;
+            background: linear-gradient(-45deg, #1a1e24, #222a33, #1e2630, #2a3340, #1f2937, #1a1e24, #232b36);
+            background-size: 400% 400%;
+            animation: gradientBG 20s ease infinite;
+            overflow-x: hidden;
+        }
+
+        /* Анимированный фон с волнистыми линиями */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: 
+                repeating-linear-gradient(90deg, 
+                    transparent 0px, 
+                    transparent 40px, 
+                    rgba(255, 255, 255, 0.03) 40px, 
+                    rgba(255, 255, 255, 0.03) 45px),
+                repeating-linear-gradient(180deg, 
+                    transparent 0px, 
+                    transparent 60px, 
+                    rgba(255, 255, 255, 0.02) 60px, 
+                    rgba(255, 255, 255, 0.02) 65px);
+            opacity: 0.5;
+            animation: waveMove 15s linear infinite;
+            z-index: 0;
+        }
+
+        /* Дополнительные волны */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: 
+                radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 30%),
+                radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 35%),
+                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 40%),
+                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 45%);
+            opacity: 0.3;
+            animation: wavePulse 12s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 50% 25%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 75%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes waveMove {
+            0% { transform: translateX(0) translateY(0); opacity: 0.5; }
+            25% { transform: translateX(20px) translateY(-10px); opacity: 0.6; }
+            50% { transform: translateX(40px) translateY(10px); opacity: 0.5; }
+            75% { transform: translateX(20px) translateY(20px); opacity: 0.4; }
+            100% { transform: translateX(0) translateY(0); opacity: 0.5; }
+        }
+
+        @keyframes wavePulse {
+            0% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.1); }
+            100% { opacity: 0.2; transform: scale(1); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(30, 35, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-weight: 500;
+            font-size: 2.2rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #f0f4fa 0%, #b0b8c5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-weight: 500;
+            font-size: 1.5rem;
+            color: #cbd2df;
+            margin: 2rem 0 1rem 0;
+            letter-spacing: -0.01em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-weight: 500;
+            color: #b4bccb;
+            margin-bottom: 1rem;
+        }
+
+        /* Панель ввода */
+        .input-panel {
+            background: rgba(20, 24, 30, 0.7);
+            border-radius: 24px;
+            padding: 1.8rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(8px);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 1.2rem;
+            background: #0f1319;
+            border: 1px solid #2c323b;
+            border-radius: 18px;
+            font-family: 'Inter', monospace;
+            font-size: 1rem;
+            color: #e0e4e9;
+            resize: vertical;
+            transition: all 0.2s;
+            line-height: 1.8;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #5f6a7a;
+            box-shadow: 0 0 0 3px rgba(120, 140, 170, 0.2);
+        }
+
+        /* Анимированная кнопка с радужной подсветкой */
+        .btn {
+            background: #252b33;
+            color: #eef2f8;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-radius: 40px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            letter-spacing: 0.01em;
+            margin-top: 1rem;
+            z-index: 2;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(90deg, 
+                #ff416c, #ff4b2b, #ffd700, #7cfc00, #00ffff, #ff69b4, #ff416c);
+            background-size: 300% 100%;
+            border-radius: 42px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -2;
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+            animation: rainbow-border 2s linear infinite;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #252b33;
+            border-radius: 38px;
+            z-index: -1;
+            margin: 2px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes rainbow-border {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        /* Карточки результатов */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: rgba(24, 29, 36, 0.8);
+            backdrop-filter: blur(5px);
+            border-radius: 24px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(28, 34, 42, 0.9);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 500;
+            color: #f0f4fa;
+            margin: 0.5rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-label {
+            color: #8f9aad;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Блок формул с радужным свечением */
+        .formula-block {
+            background: #0f1319;
+            border-radius: 24px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid #2c323b;
+            font-size: 1.1rem;
+            overflow-x: auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .formula {
+            font-family: 'Inter', monospace;
+            background: #1a1f27;
+            padding: 0.8rem 1.2rem;
+            border-radius: 18px;
+            display: inline-block;
+            margin: 0.3rem 0;
+            color: #b4c2d9;
+            border: 1px solid #2f3742;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            flex: 0 1 auto;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        /* Радужное свечение при наведении на формулу */
+        .formula:hover {
+            animation: rainbow-glow 1.5s linear infinite;
+            border-color: transparent;
+        }
+
+        @keyframes rainbow-glow {
+            0% { box-shadow: 0 0 5px #ff416c, 0 0 10px #ff416c, 0 0 15px #ff4b2b; }
+            20% { box-shadow: 0 0 5px #ff4b2b, 0 0 10px #ffd700, 0 0 15px #ffd700; }
+            40% { box-shadow: 0 0 5px #ffd700, 0 0 10px #7cfc00, 0 0 15px #7cfc00; }
+            60% { box-shadow: 0 0 5px #7cfc00, 0 0 10px #00ffff, 0 0 15px #00ffff; }
+            80% { box-shadow: 0 0 5px #00ffff, 0 0 10px #ff69b4, 0 0 15px #ff69b4; }
+            100% { box-shadow: 0 0 5px #ff69b4, 0 0 10px #ff416c, 0 0 15px #ff416c; }
+        }
+
+        /* Всплывающее окно-подсказка */
+        .tooltip-popup {
+            position: fixed;
+            background: #1e2632;
+            border: 1px solid #3d4a5c;
+            border-radius: 20px;
+            padding: 1.2rem;
+            max-width: 300px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
+            color: #dbe1ec;
+            font-size: 0.95rem;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            display: none;
+            line-height: 1.5;
+            animation: tooltip-appear 0.2s ease;
+        }
+
+        @keyframes tooltip-appear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tooltip-popup.show {
+            display: block;
+        }
+
+        .tooltip-popup h4 {
+            margin: 0 0 0.5rem 0;
+            color: #ffd78c;
+            font-weight: 500;
+        }
+
+        /* Графики */
+        .plots-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .plot-card {
+            background: #0f1319;
+            border-radius: 24px;
+            padding: 1.5rem;
+            border: 1px solid #2c323b;
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+            background: #11161d;
+            border-radius: 18px;
+            display: block;
+            margin-top: 1rem;
+        }
+
+        .badge {
+            background: #252d38;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            color: #bdc7d9;
+            border: 1px solid #3e4857;
+        }
+
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: #6a7385;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📈 Регрессионный анализ</h1>
+    <p style="color: #9aa6b9;">Парная регрессия · Преобразование Фишера · Сравнение моделей</p>
+
+    <!-- Панель ввода -->
+    <div class="input-panel">
+        <h3 style="margin-top: 0;">✏️ Введите значения Y (через запятую)</h3>
+        <textarea id="yInput" rows="2">1.92, 2.40, 2.73, 3.23, 3.97, 5.08, 6.45, 8.13, 10.49, 12.04, 14.73</textarea>
+        <button class="btn" id="analyzeBtn">Рассчитать</button>
+        <p style="color: #7b8599; margin-top: 0.8rem; font-size: 0.9rem;">🔹 X генерируется автоматически от 0 до n-1</p>
+    </div>
+
+    <!-- Отображение формул с радужным свечением -->
+    <h2>📐 Формулы (нажмите для пояснения)</h2>
+    <div class="formula-block" id="formulaBlock">
+        <div class="formula" data-formula="b1" data-title="Коэффициент регрессии b₁" data-desc="Показывает, на сколько единиц изменится Y при изменении X на одну единицу.">\( b_1 = r_{yx} \frac{S_y}{S_x} \)</div>
+        <div class="formula" data-formula="b0" data-title="Свободный член b₀" data-desc="Значение Y при X = 0 (точка пересечения с осью Y).">\( b_0 = \bar{y} - b_1 \bar{x} \)</div>
+        <div class="formula" data-formula="r" data-title="Коэффициент корреляции r" data-desc="Мера линейной связи между X и Y. От -1 до 1.">\( r_{yx} = \frac{\overline{xy} - \bar{x}\bar{y}}{S_x S_y} \)</div>
+        <div class="formula" data-formula="fisher" data-title="Преобразование Фишера u" data-desc="Используется для проверки значимости корреляции при малых выборках.">\( u = \frac{1}{2} \ln \frac{1+|r|}{1-|r|} \)</div>
+        <div class="formula" data-formula="sigma" data-title="СКО преобразования Фишера" data-desc="Стандартная ошибка для u.">\( \sigma_u = \frac{1}{\sqrt{n-3}} \)</div>
+        <div class="formula" data-formula="criterion" data-title="Критерий значимости" data-desc="Если |u| > u_{1-α/2}·σ_u, связь статистически значима.">\( |u| > u_{1-\alpha/2} \cdot \sigma_u \)</div>
+    </div>
+
+    <!-- Основные результаты -->
+    <h2>📊 Параметры модели</h2>
+    <div class="results-grid" id="statsPanel">
+        <!-- заполняется js -->
+    </div>
+
+    <!-- Графики -->
+    <h2>📉 Графическое отображение</h2>
+    <div class="plots-container" id="plotsContainer">
+        <!-- 4 canvas -->
+    </div>
+
+    <!-- Уравнения и R² -->
+    <h2>🧮 Уравнения регрессии</h2>
+    <div class="results-grid" id="equationsPanel"></div>
+
+    <!-- Вывод и анализ -->
+    <h2>🔎 Анализ улучшения модели</h2>
+    <div class="card" id="analysisCard" style="grid-column: 1/-1;">
+        <!-- заполняется -->
+    </div>
+
+    <footer>
+        <span class="badge">© Регрессионный анализ</span>
+    </footer>
+</div>
+
+<!-- Всплывающее окно для пояснения формул -->
+<div class="tooltip-popup" id="formulaTooltip">
+    <h4 id="tooltipTitle">Пояснение</h4>
+    <p id="tooltipDesc">Краткое описание формулы</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const yInput = document.getElementById('yInput');
+        const statsPanel = document.getElementById('statsPanel');
+        const plotsContainer = document.getElementById('plotsContainer');
+        const equationsPanel = document.getElementById('equationsPanel');
+        const analysisCard = document.getElementById('analysisCard');
+
+        // Всплывающие подсказки для формул - ИСПРАВЛЕНО
+        const formulaItems = document.querySelectorAll('.formula');
+        const tooltip = document.getElementById('formulaTooltip');
+        let activeTooltip = null;
+
+        function hideTooltip() {
+            tooltip.classList.remove('show');
+            activeTooltip = null;
+        }
+
+        function showTooltip(element, event) {
+            event.stopPropagation();
+            
+            const title = element.dataset.title || 'Формула';
+            const desc = element.dataset.desc || 'Нет описания';
+            
+            document.getElementById('tooltipTitle').textContent = title;
+            document.getElementById('tooltipDesc').textContent = desc;
+            
+            const rect = element.getBoundingClientRect();
+            const tooltipWidth = 300;
+            let left = rect.left + window.scrollX + 20;
+            let top = rect.bottom + window.scrollY + 10;
+            
+            // Проверяем, не выходит ли подсказка за правый край экрана
+            if (left + tooltipWidth > window.innerWidth - 20) {
+                left = rect.right - tooltipWidth - 20;
+            }
+            
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = top + 'px';
+            tooltip.classList.add('show');
+            activeTooltip = element;
+        }
+
+        formulaItems.forEach(item => {
+            item.addEventListener('click', (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // Если кликнули на ту же формулу, прячем подсказку
+                if (activeTooltip === item) {
+                    hideTooltip();
+                } else {
+                    showTooltip(item, event);
+                }
+            });
+        });
+
+        // Закрытие подсказки при клике вне формул
+        document.addEventListener('click', (event) => {
+            if (!event.target.classList.contains('formula')) {
+                hideTooltip();
+            }
+        });
+
+        // Закрытие подсказки при нажатии Escape
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                hideTooltip();
+            }
+        });
+
+        // Функция парсинга ввода
+        function parseYInput(str) {
+            return str.split(',').map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+        }
+
+        // Основная функция расчёта
+        function calculate(y) {
+            if (y.length < 4) throw new Error('Нужно минимум 4 точки');
+            const n = y.length;
+            const x = Array.from({ length: n }, (_, i) => i);
+
+            // Средние
+            const xMean = x.reduce((a, b) => a + b, 0) / n;
+            const yMean = y.reduce((a, b) => a + b, 0) / n;
+
+            // СКО смещённые (ddof=0)
+            const Sx = Math.sqrt(x.map(v => (v - xMean) ** 2).reduce((a, b) => a + b, 0) / n);
+            const Sy = Math.sqrt(y.map(v => (v - yMean) ** 2).reduce((a, b) => a + b, 0) / n);
+
+            // Среднее xy
+            const xyMean = x.map((_, i) => x[i] * y[i]).reduce((a, b) => a + b, 0) / n;
+
+            // Корреляция
+            const r = (xyMean - xMean * yMean) / (Sx * Sy);
+
+            // Коэф регрессии
+            const b1 = r * (Sy / Sx);
+            const b0 = yMean - b1 * xMean;
+
+            // Фишер
+            const rAbs = Math.abs(r);
+            const u = 0.5 * Math.log((1 + rAbs) / (1 - rAbs));
+            const sigmaU = 1 / Math.sqrt(n - 3);
+            const alpha = 0.05;
+            const uCritical = 1.96; // norm.ppf(0.975) ≈ 1.96
+            const rightSide = uCritical * sigmaU;
+            const significant = Math.abs(u) > rightSide;
+
+            // Полиномы
+            // квадратичная (polyfit степени 2)
+            const Xmat = x.map(xi => [1, xi, xi*xi]);
+            const yVec = y;
+            const coeffsQuad = polyfit(Xmat, yVec); // [a0, a1, a2] для a0 + a1*x + a2*x^2
+
+            // кубическая (степень 3)
+            const XmatCubic = x.map(xi => [1, xi, xi*xi, xi*xi*xi]);
+            const coeffsCubic = polyfit(XmatCubic, yVec); // [a0, a1, a2, a3]
+
+            // R²
+            const yPredLinear = x.map(xi => b0 + b1 * xi);
+            const ssTot = y.reduce((acc, yi) => acc + (yi - yMean) ** 2, 0);
+            const ssResLinear = y.reduce((acc, yi, i) => acc + (yi - yPredLinear[i]) ** 2, 0);
+            const r2Linear = 1 - ssResLinear / ssTot;
+
+            const yPredQuad = x.map(xi => coeffsQuad[0] + coeffsQuad[1]*xi + coeffsQuad[2]*xi*xi);
+            const ssResQuad = y.reduce((acc, yi, i) => acc + (yi - yPredQuad[i]) ** 2, 0);
+            const r2Quad = 1 - ssResQuad / ssTot;
+
+            const yPredCubic = x.map(xi => coeffsCubic[0] + coeffsCubic[1]*xi + coeffsCubic[2]*xi*xi + coeffsCubic[3]*xi*xi*xi);
+            const ssResCubic = y.reduce((acc, yi, i) => acc + (yi - yPredCubic[i]) ** 2, 0);
+            const r2Cubic = 1 - ssResCubic / ssTot;
+
+            return {
+                n, x, y, xMean, yMean, Sx, Sy, xyMean, r, b0, b1, u, sigmaU, significant,
+                coeffsQuad, coeffsCubic, r2Linear, r2Quad, r2Cubic,
+                yPredLinear, yPredQuad, yPredCubic
+            };
+        }
+
+        // Простейшая полифит через псевдообратную (метод наименьших квадратов)
+        function polyfit(Xmat, y) {
+            const A = Xmat;
+            const AT = A[0].map((_, i) => A.map(row => row[i]));
+            const ATA = AT.map(row => row.map((_, j) => row.reduce((sum, _, k) => sum + row[k] * A[k][j], 0)));
+            const ATy = AT.map(row => row.reduce((sum, _, i) => sum + row[i] * y[i], 0));
+            // Решение СЛАУ ATA * coeffs = ATy (метод Гаусса для простоты — для малых размерностей)
+            return gaussElimination(ATA, ATy);
+        }
+
+        function gaussElimination(A, b) {
+            const n = A.length;
+            for (let i = 0; i < n; i++) {
+                let maxRow = i;
+                for (let k = i + 1; k < n; k++) if (Math.abs(A[k][i]) > Math.abs(A[maxRow][i])) maxRow = k;
+                [A[i], A[maxRow]] = [A[maxRow], A[i]];
+                [b[i], b[maxRow]] = [b[maxRow], b[i]];
+                for (let k = i + 1; k < n; k++) {
+                    const factor = A[k][i] / A[i][i];
+                    for (let j = i; j < n; j++) A[k][j] -= factor * A[i][j];
+                    b[k] -= factor * b[i];
+                }
+            }
+            const x = new Array(n).fill(0);
+            for (let i = n - 1; i >= 0; i--) {
+                x[i] = b[i];
+                for (let j = i + 1; j < n; j++) x[i] -= A[i][j] * x[j];
+                x[i] /= A[i][i];
+            }
+            return x;
+        }
+
+        // Отрисовка 4 графиков с Chart.js
+        function renderPlots(data) {
+            plotsContainer.innerHTML = '';
+            const titles = ['а) Исходные данные', 'б) Линейная', 'в) Квадратичная', 'г) Кубическая'];
+            for (let i = 0; i < 4; i++) {
+                const div = document.createElement('div');
+                div.className = 'plot-card';
+                div.innerHTML = `<h3 style="margin:0 0 0.5rem 0">${titles[i]}</h3><canvas id="chart${i}" width="400" height="300"></canvas>`;
+                plotsContainer.appendChild(div);
+            }
+
+            // Исходные данные
+            const ctx0 = document.getElementById('chart0').getContext('2d');
+            new Chart(ctx0, {
+                type: 'scatter',
+                data: { datasets: [{ label: 'Исходные', data: data.x.map((x,i)=>({x, y:data.y[i]})), backgroundColor: '#7f8fa6', pointRadius: 6 }] },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } }
+            });
+
+            // Линейная
+            const ctx1 = document.getElementById('chart1').getContext('2d');
+            new Chart(ctx1, {
+                type: 'scatter',
+                data: { 
+                    datasets: [
+                        { label: 'Данные', data: data.x.map((x,i)=>({x, y:data.y[i]})), backgroundColor: '#a0b0c9', pointRadius: 4 },
+                        { label: 'Линейная', data: data.x.map(x=>({x, y:data.b0 + data.b1*x})), type: 'line', borderColor: '#ff7f7f', borderWidth: 3, fill: false, tension: 0 }
+                    ] 
+                },
+                options: { responsive: true }
+            });
+
+            // Квадратичная
+            const ctx2 = document.getElementById('chart2').getContext('2d');
+            new Chart(ctx2, {
+                type: 'scatter',
+                data: { 
+                    datasets: [
+                        { label: 'Данные', data: data.x.map((x,i)=>({x, y:data.y[i]})), backgroundColor: '#a0b0c9', pointRadius: 4 },
+                        { label: 'Квадратичная', data: data.x.map(x=>({x, y:data.coeffsQuad[0] + data.coeffsQuad[1]*x + data.coeffsQuad[2]*x*x})), type: 'line', borderColor: '#6fcf97', borderWidth: 3, fill: false }
+                    ] 
+                }
+            });
+
+            // Кубическая
+            const ctx3 = document.getElementById('chart3').getContext('2d');
+            new Chart(ctx3, {
+                type: 'scatter',
+                data: { 
+                    datasets: [
+                        { label: 'Данные', data: data.x.map((x,i)=>({x, y:data.y[i]})), backgroundColor: '#a0b0c9', pointRadius: 4 },
+                        { label: 'Кубическая', data: data.x.map(x=>({x, y:data.coeffsCubic[0] + data.coeffsCubic[1]*x + data.coeffsCubic[2]*x*x + data.coeffsCubic[3]*x*x*x})), type: 'line', borderColor: '#bb8fce', borderWidth: 3, fill: false }
+                    ] 
+                }
+            });
+        }
+
+        // Обновление интерфейса
+        function updateUI() {
+            try {
+                const y = parseYInput(yInput.value);
+                if (y.length < 3) throw new Error('Минимум 3 точки');
+                const data = calculate(y);
+
+                // Статистика
+                statsPanel.innerHTML = `
+                    <div class="card"><div class="stat-label">n</div><div class="stat-value">${data.n}</div></div>
+                    <div class="card"><div class="stat-label">x̄</div><div class="stat-value">${data.xMean.toFixed(3)}</div></div>
+                    <div class="card"><div class="stat-label">ȳ</div><div class="stat-value">${data.yMean.toFixed(3)}</div></div>
+                    <div class="card"><div class="stat-label">Sx</div><div class="stat-value">${data.Sx.toFixed(3)}</div></div>
+                    <div class="card"><div class="stat-label">Sy</div><div class="stat-value">${data.Sy.toFixed(3)}</div></div>
+                    <div class="card"><div class="stat-label">r</div><div class="stat-value">${data.r.toFixed(4)}</div></div>
+                    <div class="card"><div class="stat-label">u Фишера</div><div class="stat-value">${data.u.toFixed(4)}</div></div>
+                    <div class="card"><div class="stat-label">σ_u</div><div class="stat-value">${data.sigmaU.toFixed(4)}</div></div>
+                    <div class="card"><div class="stat-label">Значимость</div><div class="stat-value">${data.significant ? '✅' : '❌'}</div></div>
+                `;
+
+                // Уравнения
+                equationsPanel.innerHTML = `
+                    <div class="card"><div class="stat-label">Линейная</div><div>y = ${data.b0.toFixed(3)} + ${data.b1.toFixed(3)}x</div><div>R² = ${data.r2Linear.toFixed(4)}</div></div>
+                    <div class="card"><div class="stat-label">Квадратичная</div><div>y = ${data.coeffsQuad[0].toFixed(3)} + ${data.coeffsQuad[1].toFixed(3)}x + ${data.coeffsQuad[2].toFixed(3)}x²</div><div>R² = ${data.r2Quad.toFixed(4)}</div></div>
+                    <div class="card"><div class="stat-label">Кубическая</div><div>y = ${data.coeffsCubic[0].toFixed(3)} + ${data.coeffsCubic[1].toFixed(3)}x + ${data.coeffsCubic[2].toFixed(3)}x² + ${data.coeffsCubic[3].toFixed(3)}x³</div><div>R² = ${data.r2Cubic.toFixed(4)}</div></div>
+                `;
+
+                // Анализ улучшения
+                const impQuad = data.r2Quad - data.r2Linear;
+                const impCubic = data.r2Cubic - data.r2Linear;
+                analysisCard.innerHTML = `
+                    <h3 style="margin-top:0">📌 Улучшение R²</h3>
+                    <p>ΔR² квадратичная: ${(impQuad*100).toFixed(2)}% &nbsp;&nbsp; ΔR² кубическая: ${(impCubic*100).toFixed(2)}%</p>
+                    <p>${impQuad < 0.01 ? '✅ Квадратичная модель даёт незначительное улучшение.' : '⚠️ Квадратичная модель заметно лучше.'}</p>
+                    <p>${impCubic < 0.01 ? '✅ Кубическая модель незначительно улучшает.' : '⚠️ Кубическая модель повышает точность, но сложнее.'}</p>
+                    <p style="color:#9aaec9">Вывод: ${data.r2Linear > 0.95 ? 'Линейная модель уже отличная.' : 'Стоит рассмотреть полиномы.'}</p>
+                `;
+
+                renderPlots(data);
+
+            } catch (e) {
+                alert('Ошибка: ' + e.message);
+            }
+        }
+
+        analyzeBtn.addEventListener('click', updateUI);
+        updateUI(); // первичный расчёт
+    });
+</script>
+</body>
+</html>
