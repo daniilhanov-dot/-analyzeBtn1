@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регрессионный анализ | Современный дизайн</title>
+    <title>Регрессионный анализ | Полный отчёт</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
         
@@ -56,7 +56,6 @@
             filter: blur(1px);
         }
 
-        /* Волнообразные кривые линии */
         body::after {
             content: '';
             position: fixed;
@@ -96,11 +95,10 @@
             100% { opacity: 0.3; transform: scale(0.98) rotate(-1deg); }
         }
 
-        /* Уменьшенный контейнер */
         .container {
-            max-width: 1300px;
+            max-width: 1400px;
             margin: 0 auto;
-            background: rgba(20, 25, 32, 0.8);
+            background: rgba(20, 25, 32, 0.85);
             backdrop-filter: blur(12px);
             border-radius: 28px;
             padding: 1.5rem;
@@ -137,7 +135,6 @@
             font-size: 1.1rem;
         }
 
-        /* Панель ввода */
         .input-panel {
             background: rgba(15, 19, 25, 0.7);
             border-radius: 20px;
@@ -167,7 +164,6 @@
             box-shadow: 0 0 0 3px rgba(120, 140, 170, 0.2);
         }
 
-        /* Анимированная кнопка с радужной подсветкой */
         .btn {
             background: #252b33;
             color: #eef2f8;
@@ -231,7 +227,65 @@
             100% { background-position: 200% 50%; }
         }
 
-        /* Карточки результатов */
+        .export-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .btn-export {
+            background: #1f2a36;
+            color: #eef2f8;
+            border: none;
+            padding: 0.6rem 1.4rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 30px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            letter-spacing: 0.01em;
+            z-index: 2;
+        }
+
+        .btn-export::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(90deg, 
+                #4facfe, #00f2fe, #43e97b, #fa709a, #4facfe);
+            background-size: 300% 100%;
+            border-radius: 32px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: -2;
+        }
+
+        .btn-export:hover::before {
+            opacity: 1;
+            animation: rainbow-border 2s linear infinite;
+        }
+
+        .btn-export::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #1f2a36;
+            border-radius: 28px;
+            z-index: -1;
+            margin: 2px;
+        }
+
         .results-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -269,7 +323,6 @@
             letter-spacing: 0.05em;
         }
 
-        /* Блок формул с радужным свечением */
         .formula-block {
             background: #0a0e14;
             border-radius: 20px;
@@ -279,32 +332,46 @@
             font-size: 1rem;
             overflow-x: auto;
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
+            flex-direction: column;
+            gap: 1rem;
             position: relative;
+        }
+
+        .formula-item {
+            background: #141a22;
+            border-radius: 16px;
+            padding: 1rem;
+            border: 1px solid #2a323e;
+            transition: all 0.2s;
+        }
+
+        .formula-item:hover {
+            animation: rainbow-glow 1.5s linear infinite;
+            border-color: transparent;
+        }
+
+        .formula-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .formula {
             font-family: 'Inter', monospace;
-            background: #141a22;
-            padding: 0.6rem 1rem;
-            border-radius: 16px;
-            display: inline-block;
-            margin: 0.2rem 0;
             color: #b4c2d9;
-            border: 1px solid #2a323e;
+            font-size: 1rem;
             cursor: help;
-            position: relative;
-            transition: all 0.2s;
-            flex: 0 1 auto;
-            box-shadow: 0 0 8px rgba(0,0,0,0.3);
-            font-size: 0.95rem;
+            min-width: 200px;
         }
 
-        /* Радужное свечение при наведении на формулу */
-        .formula:hover {
-            animation: rainbow-glow 1.5s linear infinite;
-            border-color: transparent;
+        .solution {
+            color: #a5d6ff;
+            font-size: 0.95rem;
+            background: #1e2632;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            border-left: 3px solid #ffb86b;
         }
 
         @keyframes rainbow-glow {
@@ -316,7 +383,6 @@
             100% { box-shadow: 0 0 5px #ff69b4, 0 0 10px #ff416c, 0 0 15px #ff416c; }
         }
 
-        /* Всплывающее окно-подсказка - для hover */
         .tooltip-popup {
             position: fixed;
             background: #1e2632;
@@ -357,7 +423,6 @@
             color: #cbd5e6;
         }
 
-        /* Графики */
         .plots-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -411,15 +476,15 @@
         <p style="color: #7b8599; margin-top: 0.6rem; font-size: 0.85rem;">🔹 X генерируется автоматически от 0 до n-1</p>
     </div>
 
-    <!-- Отображение формул с радужным свечением -->
-    <h2>📐 Формулы (наведите для пояснения)</h2>
+    <!-- Кнопки экспорта -->
+    <div class="export-buttons">
+        <button class="btn-export" id="exportDocBtn">📄 Экспорт в DOC (отчёт)</button>
+    </div>
+
+    <!-- Отображение формул с решениями -->
+    <h2>📐 Формулы и решения</h2>
     <div class="formula-block" id="formulaBlock">
-        <div class="formula" data-title="Коэффициент регрессии b₁" data-desc="Показывает, на сколько единиц изменится Y при изменении X на одну единицу.">\( b_1 = r_{yx} \frac{S_y}{S_x} \)</div>
-        <div class="formula" data-title="Свободный член b₀" data-desc="Значение Y при X = 0 (точка пересечения с осью Y).">\( b_0 = \bar{y} - b_1 \bar{x} \)</div>
-        <div class="formula" data-title="Коэффициент корреляции r" data-desc="Мера линейной связи между X и Y. От -1 до 1. Чем ближе к 1, тем сильнее связь.">\( r_{yx} = \frac{\overline{xy} - \bar{x}\bar{y}}{S_x S_y} \)</div>
-        <div class="formula" data-title="Преобразование Фишера u" data-desc="Используется для проверки значимости корреляции при малых выборках (n < 50).">\( u = \frac{1}{2} \ln \frac{1+|r|}{1-|r|} \)</div>
-        <div class="formula" data-title="СКО преобразования Фишера" data-desc="Стандартная ошибка для u. Зависит от объёма выборки.">\( \sigma_u = \frac{1}{\sqrt{n-3}} \)</div>
-        <div class="formula" data-title="Критерий значимости" data-desc="Если |u| > u_{1-α/2}·σ_u, связь статистически значима (при α=0.05, u_{1-α/2}=1.96).">\( |u| > u_{1-\alpha/2} \cdot \sigma_u \)</div>
+        <!-- будут заполнены через JS -->
     </div>
 
     <!-- Основные результаты -->
@@ -445,7 +510,7 @@
     </div>
 
     <footer>
-        <span class="badge">© Регрессионный анализ</span>
+        <span class="badge">© Регрессионный анализ · Полный отчёт</span>
     </footer>
 </div>
 
@@ -460,138 +525,208 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const analyzeBtn = document.getElementById('analyzeBtn');
+        const exportDocBtn = document.getElementById('exportDocBtn');
         const yInput = document.getElementById('yInput');
         const statsPanel = document.getElementById('statsPanel');
         const plotsContainer = document.getElementById('plotsContainer');
         const equationsPanel = document.getElementById('equationsPanel');
         const analysisCard = document.getElementById('analysisCard');
+        const formulaBlock = document.getElementById('formulaBlock');
 
-        // ============ ПОДСКАЗКИ ПРИ HOVER (НАВЕДЕНИИ) ============
-        const formulaItems = document.querySelectorAll('.formula');
-        const tooltip = document.getElementById('formulaTooltip');
-        let hideTimeout = null;
-        let showTimeout = null;
+        // ============ ПОДСКАЗКИ ПРИ HOVER ============
+        let currentData = null;
 
-        function hideTooltip() {
-            if (hideTimeout) clearTimeout(hideTimeout);
-            hideTimeout = setTimeout(() => {
-                tooltip.classList.remove('show');
-            }, 100); // Небольшая задержка перед скрытием
-        }
+        function setupTooltips() {
+            const formulaItems = document.querySelectorAll('.formula');
+            const tooltip = document.getElementById('formulaTooltip');
+            let hideTimeout = null;
+            let showTimeout = null;
 
-        function showTooltip(element) {
-            if (showTimeout) clearTimeout(showTimeout);
-            if (hideTimeout) clearTimeout(hideTimeout);
-            
-            const title = element.getAttribute('data-title') || 'Формула';
-            const desc = element.getAttribute('data-desc') || 'Нет описания';
-            
-            document.getElementById('tooltipTitle').textContent = title;
-            document.getElementById('tooltipDesc').textContent = desc;
-            
-            const rect = element.getBoundingClientRect();
-            const tooltipWidth = 280;
-            
-            let left = rect.right + window.scrollX + 15;
-            let top = rect.top + window.scrollY + (rect.height / 2) - 40;
-            
-            // Корректировка, если выходит за правый край
-            if (left + tooltipWidth > window.innerWidth - 20) {
-                left = rect.left - tooltipWidth - 15;
+            function hideTooltip() {
+                if (hideTimeout) clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 100);
             }
-            
-            // Корректировка, если выходит за левый край
-            if (left < 10) {
-                left = 10;
-            }
-            
-            // Корректировка по вертикали
-            if (top < 10) {
-                top = 10;
-            }
-            if (top + 120 > window.innerHeight - 20) {
-                top = window.innerHeight - 140;
-            }
-            
-            tooltip.style.left = left + 'px';
-            tooltip.style.top = top + 'px';
-            tooltip.classList.add('show');
-        }
 
-        // Обработчики для каждой формулы
-        formulaItems.forEach(item => {
-            let hoverTimer;
-            
-            item.addEventListener('mouseenter', function() {
-                // Небольшая задержка перед показом (для плавности)
-                hoverTimer = setTimeout(() => {
-                    showTooltip(this);
-                }, 200);
+            function showTooltip(element) {
+                if (showTimeout) clearTimeout(showTimeout);
+                if (hideTimeout) clearTimeout(hideTimeout);
+                
+                const title = element.getAttribute('data-title') || 'Формула';
+                const desc = element.getAttribute('data-desc') || 'Нет описания';
+                
+                document.getElementById('tooltipTitle').textContent = title;
+                document.getElementById('tooltipDesc').textContent = desc;
+                
+                const rect = element.getBoundingClientRect();
+                const tooltipWidth = 280;
+                
+                let left = rect.right + window.scrollX + 15;
+                let top = rect.top + window.scrollY + (rect.height / 2) - 40;
+                
+                if (left + tooltipWidth > window.innerWidth - 20) {
+                    left = rect.left - tooltipWidth - 15;
+                }
+                
+                if (left < 10) left = 10;
+                if (top < 10) top = 10;
+                if (top + 120 > window.innerHeight - 20) top = window.innerHeight - 140;
+                
+                tooltip.style.left = left + 'px';
+                tooltip.style.top = top + 'px';
+                tooltip.classList.add('show');
+            }
+
+            formulaItems.forEach(item => {
+                let hoverTimer;
+                
+                item.addEventListener('mouseenter', function() {
+                    hoverTimer = setTimeout(() => {
+                        showTooltip(this);
+                    }, 200);
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    clearTimeout(hoverTimer);
+                    hideTooltip();
+                });
+            });
+
+            tooltip.addEventListener('mouseenter', () => {
+                if (hideTimeout) clearTimeout(hideTimeout);
             });
             
-            item.addEventListener('mouseleave', function() {
-                clearTimeout(hoverTimer);
+            tooltip.addEventListener('mouseleave', () => {
                 hideTooltip();
             });
-        });
 
-        // Скрывать подсказку при уходе мыши с неё
-        tooltip.addEventListener('mouseenter', () => {
-            if (hideTimeout) clearTimeout(hideTimeout);
-        });
-        
-        tooltip.addEventListener('mouseleave', () => {
-            hideTooltip();
-        });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') tooltip.classList.remove('show');
+            });
 
-        // Закрытие при нажатии Escape
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                tooltip.classList.remove('show');
+            window.addEventListener('scroll', () => tooltip.classList.remove('show'));
+            window.addEventListener('resize', () => tooltip.classList.remove('show'));
+        }
+
+        // ============ ФУНКЦИИ ЭКСПОРТА ============
+        function exportToDoc() {
+            if (!currentData) {
+                alert('Сначала выполните расчёт');
+                return;
             }
-        });
 
-        // Закрытие при скролле
-        window.addEventListener('scroll', () => {
-            tooltip.classList.remove('show');
-        });
+            const data = currentData;
+            const xValues = data.x.join(', ');
+            const yValues = data.y.map(v => v.toFixed(3)).join(', ');
+            
+            // Формируем содержимое DOC
+            let content = `
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Регрессионный анализ - отчёт</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 2cm; }
+                        h1 { color: #1a3e6f; }
+                        h2 { color: #2c3e50; border-bottom: 1px solid #ccc; }
+                        table { border-collapse: collapse; width: 100%; margin: 15px 0; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f2f2f2; }
+                        .formula { background: #f8f9fa; padding: 10px; border-left: 4px solid #3498db; margin: 10px 0; }
+                        .result { font-weight: bold; color: #27ae60; }
+                    </style>
+                </head>
+                <body>
+                    <h1>📊 Отчёт по регрессионному анализу</h1>
+                    <p>Дата: ${new Date().toLocaleString()}</p>
+                    
+                    <h2>1. Исходные данные</h2>
+                    <p>Количество наблюдений (n): <strong>${data.n}</strong></p>
+                    <p>X: ${xValues}</p>
+                    <p>Y: ${yValues}</p>
+                    
+                    <h2>2. Расчётные параметры</h2>
+                    <table>
+                        <tr><th>Параметр</th><th>Значение</th></tr>
+                        <tr><td>Среднее X (x̄)</td><td>${data.xMean.toFixed(4)}</td></tr>
+                        <tr><td>Среднее Y (ȳ)</td><td>${data.yMean.toFixed(4)}</td></tr>
+                        <tr><td>СКО X (Sx)</td><td>${data.Sx.toFixed(4)}</td></tr>
+                        <tr><td>СКО Y (Sy)</td><td>${data.Sy.toFixed(4)}</td></tr>
+                        <tr><td>Среднее xy</td><td>${data.xyMean.toFixed(4)}</td></tr>
+                        <tr><td>Коэффициент корреляции (r)</td><td>${data.r.toFixed(6)}</td></tr>
+                        <tr><td>Преобразование Фишера (u)</td><td>${data.u.toFixed(6)}</td></tr>
+                        <tr><td>σ_u</td><td>${data.sigmaU.toFixed(6)}</td></tr>
+                        <tr><td>Критерий значимости</td><td>${data.significant ? 'Значим (связь установлена)' : 'Не значим'}</td></tr>
+                    </table>
+                    
+                    <h2>3. Уравнения регрессии</h2>
+                    <div class="formula">
+                        <strong>Линейная модель:</strong> y = ${data.b0.toFixed(4)} + ${data.b1.toFixed(4)}·x<br>
+                        <span class="result">R² = ${data.r2Linear.toFixed(6)}</span>
+                    </div>
+                    <div class="formula">
+                        <strong>Квадратичная модель:</strong> y = ${data.coeffsQuad[0].toFixed(4)} + ${data.coeffsQuad[1].toFixed(4)}·x + ${data.coeffsQuad[2].toFixed(4)}·x²<br>
+                        <span class="result">R² = ${data.r2Quad.toFixed(6)}</span>
+                    </div>
+                    <div class="formula">
+                        <strong>Кубическая модель:</strong> y = ${data.coeffsCubic[0].toFixed(4)} + ${data.coeffsCubic[1].toFixed(4)}·x + ${data.coeffsCubic[2].toFixed(4)}·x² + ${data.coeffsCubic[3].toFixed(4)}·x³<br>
+                        <span class="result">R² = ${data.r2Cubic.toFixed(6)}</span>
+                    </div>
+                    
+                    <h2>4. Анализ улучшения модели</h2>
+                    <p>ΔR² квадратичная: ${((data.r2Quad - data.r2Linear)*100).toFixed(2)}%</p>
+                    <p>ΔR² кубическая: ${((data.r2Cubic - data.r2Linear)*100).toFixed(2)}%</p>
+                    <p>Вывод: ${data.r2Linear > 0.95 ? 'Линейная модель достаточно точна' : 'Стоит рассмотреть полиномиальные модели'}</p>
+                    
+                    <h2>5. Значения формул</h2>
+                    <table>
+                        <tr><th>Формула</th><th>Расчёт</th><th>Результат</th></tr>
+                        <tr><td>b₁ = r·(Sy/Sx)</td><td>${data.r.toFixed(4)}·(${data.Sy.toFixed(4)}/${data.Sx.toFixed(4)})</td><td>${data.b1.toFixed(4)}</td></tr>
+                        <tr><td>b₀ = ȳ - b₁·x̄</td><td>${data.yMean.toFixed(4)} - ${data.b1.toFixed(4)}·${data.xMean.toFixed(4)}</td><td>${data.b0.toFixed(4)}</td></tr>
+                        <tr><td>r = (xȳ - x̄·ȳ)/(Sx·Sy)</td><td>(${data.xyMean.toFixed(4)} - ${data.xMean.toFixed(4)}·${data.yMean.toFixed(4)})/(${data.Sx.toFixed(4)}·${data.Sy.toFixed(4)})</td><td>${data.r.toFixed(6)}</td></tr>
+                        <tr><td>u = 0.5·ln((1+|r|)/(1-|r|))</td><td>0.5·ln((1+${Math.abs(data.r).toFixed(4)})/(1-${Math.abs(data.r).toFixed(4)}))</td><td>${data.u.toFixed(6)}</td></tr>
+                        <tr><td>σ_u = 1/√(n-3)</td><td>1/√(${data.n}-3)</td><td>${data.sigmaU.toFixed(6)}</td></tr>
+                    </table>
+                </body>
+                </html>
+            `;
+            
+            // Создаём и скачиваем файл
+            const blob = new Blob([content], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `regression_report_${new Date().toISOString().slice(0,10)}.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
 
-        // Закрытие при изменении размера окна
-        window.addEventListener('resize', () => {
-            tooltip.classList.remove('show');
-        });
-        // ============ КОНЕЦ ПОДСКАЗОК ============
-
-        // Функция парсинга ввода
+        // ============ ФУНКЦИИ РАСЧЁТА ============
         function parseYInput(str) {
             return str.split(',').map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
         }
 
-        // Основная функция расчёта
         function calculate(y) {
             if (y.length < 4) throw new Error('Нужно минимум 4 точки');
             const n = y.length;
             const x = Array.from({ length: n }, (_, i) => i);
 
-            // Средние
             const xMean = x.reduce((a, b) => a + b, 0) / n;
             const yMean = y.reduce((a, b) => a + b, 0) / n;
 
-            // СКО смещённые (ddof=0)
             const Sx = Math.sqrt(x.map(v => (v - xMean) ** 2).reduce((a, b) => a + b, 0) / n);
             const Sy = Math.sqrt(y.map(v => (v - yMean) ** 2).reduce((a, b) => a + b, 0) / n);
 
-            // Среднее xy
             const xyMean = x.map((_, i) => x[i] * y[i]).reduce((a, b) => a + b, 0) / n;
 
-            // Корреляция
             const r = (xyMean - xMean * yMean) / (Sx * Sy);
 
-            // Коэф регрессии
             const b1 = r * (Sy / Sx);
             const b0 = yMean - b1 * xMean;
 
-            // Фишер
             const rAbs = Math.abs(r);
             const u = 0.5 * Math.log((1 + rAbs) / (1 - rAbs));
             const sigmaU = 1 / Math.sqrt(n - 3);
@@ -600,7 +735,6 @@
             const rightSide = uCritical * sigmaU;
             const significant = Math.abs(u) > rightSide;
 
-            // Полиномы
             const Xmat = x.map(xi => [1, xi, xi*xi]);
             const yVec = y;
             const coeffsQuad = polyfit(Xmat, yVec);
@@ -608,7 +742,6 @@
             const XmatCubic = x.map(xi => [1, xi, xi*xi, xi*xi*xi]);
             const coeffsCubic = polyfit(XmatCubic, yVec);
 
-            // R²
             const yPredLinear = x.map(xi => b0 + b1 * xi);
             const ssTot = y.reduce((acc, yi) => acc + (yi - yMean) ** 2, 0);
             const ssResLinear = y.reduce((acc, yi, i) => acc + (yi - yPredLinear[i]) ** 2, 0);
@@ -659,6 +792,62 @@
             return x;
         }
 
+        // ============ ОТОБРАЖЕНИЕ ФОРМУЛ С РЕШЕНИЯМИ ============
+        function renderFormulasWithSolutions(data) {
+            const formulas = [
+                {
+                    formula: 'b₁ = r·(Sy/Sx)',
+                    title: 'Коэффициент регрессии b₁',
+                    desc: 'Показывает, на сколько единиц изменится Y при изменении X на одну единицу.',
+                    solution: `${data.r.toFixed(4)} · (${data.Sy.toFixed(4)} / ${data.Sx.toFixed(4)}) = ${data.b1.toFixed(4)}`
+                },
+                {
+                    formula: 'b₀ = ȳ - b₁·x̄',
+                    title: 'Свободный член b₀',
+                    desc: 'Значение Y при X = 0 (точка пересечения с осью Y).',
+                    solution: `${data.yMean.toFixed(4)} - ${data.b1.toFixed(4)} · ${data.xMean.toFixed(4)} = ${data.b0.toFixed(4)}`
+                },
+                {
+                    formula: 'r = (xȳ - x̄·ȳ)/(Sx·Sy)',
+                    title: 'Коэффициент корреляции r',
+                    desc: 'Мера линейной связи между X и Y. От -1 до 1.',
+                    solution: `(${data.xyMean.toFixed(4)} - ${data.xMean.toFixed(4)}·${data.yMean.toFixed(4)}) / (${data.Sx.toFixed(4)}·${data.Sy.toFixed(4)}) = ${data.r.toFixed(6)}`
+                },
+                {
+                    formula: 'u = 0.5·ln((1+|r|)/(1-|r|))',
+                    title: 'Преобразование Фишера u',
+                    desc: 'Используется для проверки значимости корреляции при малых выборках.',
+                    solution: `0.5·ln((1+${Math.abs(data.r).toFixed(4)})/(1-${Math.abs(data.r).toFixed(4)})) = ${data.u.toFixed(6)}`
+                },
+                {
+                    formula: 'σ_u = 1/√(n-3)',
+                    title: 'СКО преобразования Фишера',
+                    desc: 'Стандартная ошибка для u.',
+                    solution: `1/√(${data.n}-3) = ${data.sigmaU.toFixed(6)}`
+                },
+                {
+                    formula: '|u| > u_{1-α/2}·σ_u',
+                    title: 'Критерий значимости',
+                    desc: 'Если условие выполняется, связь статистически значима.',
+                    solution: `|${data.u.toFixed(4)}| > 1.96·${data.sigmaU.toFixed(4)} = ${(1.96 * data.sigmaU).toFixed(4)} → ${data.significant ? '✅ Да, значима' : '❌ Нет, не значима'}`
+                }
+            ];
+
+            let html = '';
+            formulas.forEach(f => {
+                html += `
+                    <div class="formula-item">
+                        <div class="formula-row">
+                            <div class="formula" data-title="${f.title}" data-desc="${f.desc}">${f.formula}</div>
+                            <div class="solution">${f.solution}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            formulaBlock.innerHTML = html;
+        }
+
+        // ============ ГРАФИКИ ============
         function renderPlots(data) {
             plotsContainer.innerHTML = '';
             const titles = ['а) Исходные данные', 'б) Линейная', 'в) Квадратичная', 'г) Кубическая'];
@@ -711,12 +900,18 @@
             });
         }
 
+        // ============ ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ============
         function updateUI() {
             try {
                 const y = parseYInput(yInput.value);
                 if (y.length < 3) throw new Error('Минимум 3 точки');
                 const data = calculate(y);
+                currentData = data;
 
+                // Формулы с решениями
+                renderFormulasWithSolutions(data);
+
+                // Статистика
                 statsPanel.innerHTML = `
                     <div class="card"><div class="stat-label">n</div><div class="stat-value">${data.n}</div></div>
                     <div class="card"><div class="stat-label">x̄</div><div class="stat-value">${data.xMean.toFixed(3)}</div></div>
@@ -729,12 +924,14 @@
                     <div class="card"><div class="stat-label">Значимость</div><div class="stat-value">${data.significant ? '✅' : '❌'}</div></div>
                 `;
 
+                // Уравнения
                 equationsPanel.innerHTML = `
                     <div class="card"><div class="stat-label">Линейная</div><div style="font-size:0.9rem">y = ${data.b0.toFixed(3)} + ${data.b1.toFixed(3)}x</div><div style="margin-top:0.3rem">R² = ${data.r2Linear.toFixed(4)}</div></div>
                     <div class="card"><div class="stat-label">Квадратичная</div><div style="font-size:0.85rem">y = ${data.coeffsQuad[0].toFixed(3)} + ${data.coeffsQuad[1].toFixed(3)}x + ${data.coeffsQuad[2].toFixed(3)}x²</div><div style="margin-top:0.3rem">R² = ${data.r2Quad.toFixed(4)}</div></div>
                     <div class="card"><div class="stat-label">Кубическая</div><div style="font-size:0.8rem">y = ${data.coeffsCubic[0].toFixed(3)} + ${data.coeffsCubic[1].toFixed(3)}x + ${data.coeffsCubic[2].toFixed(3)}x² + ${data.coeffsCubic[3].toFixed(3)}x³</div><div style="margin-top:0.3rem">R² = ${data.r2Cubic.toFixed(4)}</div></div>
                 `;
 
+                // Анализ
                 const impQuad = data.r2Quad - data.r2Linear;
                 const impCubic = data.r2Cubic - data.r2Linear;
                 analysisCard.innerHTML = `
@@ -746,6 +943,7 @@
                 `;
 
                 renderPlots(data);
+                setupTooltips();
 
             } catch (e) {
                 alert('Ошибка: ' + e.message);
@@ -753,6 +951,7 @@
         }
 
         analyzeBtn.addEventListener('click', updateUI);
+        exportDocBtn.addEventListener('click', exportToDoc);
         updateUI();
     });
 </script>
