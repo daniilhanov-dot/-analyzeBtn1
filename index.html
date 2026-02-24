@@ -16,42 +16,47 @@
         body {
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            padding: 2rem;
+            padding: 1.5rem;
             position: relative;
             color: #e0e4e9;
-            line-height: 1.6;
-            background: linear-gradient(-45deg, #1a1e24, #222a33, #1e2630, #2a3340, #1f2937, #1a1e24, #232b36);
+            line-height: 1.5;
+            background: linear-gradient(-45deg, #0f141c, #1a2330, #14212b, #1e2c3a, #16232e, #0f1a24);
             background-size: 400% 400%;
-            animation: gradientBG 20s ease infinite;
+            animation: gradientBG 12s ease infinite;
             overflow-x: hidden;
         }
 
-        /* Анимированный фон с волнистыми линиями */
+        /* Усиленный анимированный фон с волнистыми линиями */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
             pointer-events: none;
             background: 
                 repeating-linear-gradient(90deg, 
                     transparent 0px, 
-                    transparent 40px, 
-                    rgba(255, 255, 255, 0.03) 40px, 
-                    rgba(255, 255, 255, 0.03) 45px),
+                    transparent 30px, 
+                    rgba(255, 255, 255, 0.07) 30px, 
+                    rgba(255, 255, 255, 0.03) 32px,
+                    transparent 32px,
+                    transparent 60px),
                 repeating-linear-gradient(180deg, 
                     transparent 0px, 
-                    transparent 60px, 
-                    rgba(255, 255, 255, 0.02) 60px, 
-                    rgba(255, 255, 255, 0.02) 65px);
-            opacity: 0.5;
-            animation: waveMove 15s linear infinite;
+                    transparent 40px, 
+                    rgba(255, 255, 255, 0.05) 40px, 
+                    rgba(255, 255, 255, 0.02) 42px,
+                    transparent 42px,
+                    transparent 80px);
+            opacity: 0.7;
+            animation: waveMove 18s linear infinite;
             z-index: 0;
+            filter: blur(1px);
         }
 
-        /* Дополнительные волны */
+        /* Волнообразные кривые линии */
         body::after {
             content: '';
             position: fixed;
@@ -61,12 +66,12 @@
             height: 100%;
             pointer-events: none;
             background: 
-                radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 30%),
-                radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.02) 0%, transparent 35%),
-                radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 40%),
-                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.02) 0%, transparent 45%);
-            opacity: 0.3;
-            animation: wavePulse 12s ease-in-out infinite;
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.08) 0%, transparent 20%),
+                radial-gradient(circle at 80% 60%, rgba(255, 255, 255, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.06) 0%, transparent 30%),
+                radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.06) 0%, transparent 25%);
+            opacity: 0.5;
+            animation: wavePulse 8s ease-in-out infinite alternate;
             z-index: 0;
         }
 
@@ -79,27 +84,27 @@
         }
 
         @keyframes waveMove {
-            0% { transform: translateX(0) translateY(0); opacity: 0.5; }
-            25% { transform: translateX(20px) translateY(-10px); opacity: 0.6; }
-            50% { transform: translateX(40px) translateY(10px); opacity: 0.5; }
-            75% { transform: translateX(20px) translateY(20px); opacity: 0.4; }
-            100% { transform: translateX(0) translateY(0); opacity: 0.5; }
+            0% { transform: translateX(0) translateY(0) rotate(0deg); opacity: 0.7; }
+            33% { transform: translateX(15px) translateY(-8px) rotate(0.5deg); opacity: 0.9; }
+            66% { transform: translateX(-10px) translateY(12px) rotate(-0.3deg); opacity: 0.8; }
+            100% { transform: translateX(0) translateY(0) rotate(0deg); opacity: 0.7; }
         }
 
         @keyframes wavePulse {
-            0% { opacity: 0.2; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.1); }
-            100% { opacity: 0.2; transform: scale(1); }
+            0% { opacity: 0.3; transform: scale(1) rotate(0deg); }
+            50% { opacity: 0.6; transform: scale(1.05) rotate(1deg); }
+            100% { opacity: 0.3; transform: scale(0.98) rotate(-1deg); }
         }
 
+        /* Уменьшенный контейнер */
         .container {
-            max-width: 1400px;
+            max-width: 1300px;
             margin: 0 auto;
-            background: rgba(30, 35, 42, 0.85);
+            background: rgba(20, 25, 32, 0.8);
             backdrop-filter: blur(12px);
-            border-radius: 32px;
-            padding: 2rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+            border-radius: 28px;
+            padding: 1.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
             border: 1px solid rgba(255, 255, 255, 0.05);
             position: relative;
             z-index: 1;
@@ -107,52 +112,53 @@
 
         h1 {
             font-weight: 500;
-            font-size: 2.2rem;
+            font-size: 2rem;
             letter-spacing: -0.02em;
             background: linear-gradient(135deg, #f0f4fa 0%, #b0b8c5 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
         }
 
         h2 {
             font-weight: 500;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: #cbd2df;
-            margin: 2rem 0 1rem 0;
+            margin: 1.5rem 0 0.8rem 0;
             letter-spacing: -0.01em;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.4rem;
         }
 
         h3 {
             font-weight: 500;
             color: #b4bccb;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
         }
 
         /* Панель ввода */
         .input-panel {
-            background: rgba(20, 24, 30, 0.7);
-            border-radius: 24px;
-            padding: 1.8rem;
-            margin: 2rem 0;
+            background: rgba(15, 19, 25, 0.7);
+            border-radius: 20px;
+            padding: 1.3rem;
+            margin: 1.5rem 0;
             border: 1px solid rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(8px);
         }
 
         textarea {
             width: 100%;
-            padding: 1.2rem;
-            background: #0f1319;
-            border: 1px solid #2c323b;
-            border-radius: 18px;
+            padding: 1rem;
+            background: #0a0e14;
+            border: 1px solid #2a303a;
+            border-radius: 16px;
             font-family: 'Inter', monospace;
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #e0e4e9;
             resize: vertical;
             transition: all 0.2s;
-            line-height: 1.8;
+            line-height: 1.6;
         }
 
         textarea:focus {
@@ -166,10 +172,10 @@
             background: #252b33;
             color: #eef2f8;
             border: none;
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
+            padding: 0.8rem 1.8rem;
+            font-size: 1rem;
             font-weight: 500;
-            border-radius: 40px;
+            border-radius: 36px;
             cursor: pointer;
             position: relative;
             overflow: hidden;
@@ -177,7 +183,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.05);
             letter-spacing: 0.01em;
-            margin-top: 1rem;
+            margin-top: 0.8rem;
             z-index: 2;
         }
 
@@ -191,7 +197,7 @@
             background: linear-gradient(90deg, 
                 #ff416c, #ff4b2b, #ffd700, #7cfc00, #00ffff, #ff69b4, #ff416c);
             background-size: 300% 100%;
-            border-radius: 42px;
+            border-radius: 38px;
             opacity: 0;
             transition: opacity 0.3s;
             z-index: -2;
@@ -210,7 +216,7 @@
             right: 0;
             bottom: 0;
             background: #252b33;
-            border-radius: 38px;
+            border-radius: 34px;
             z-index: -1;
             margin: 2px;
         }
@@ -228,70 +234,71 @@
         /* Карточки результатов */
         .results-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.2rem;
+            margin: 1.5rem 0;
         }
 
         .card {
-            background: rgba(24, 29, 36, 0.8);
+            background: rgba(18, 22, 28, 0.8);
             backdrop-filter: blur(5px);
-            border-radius: 24px;
-            padding: 1.5rem;
+            border-radius: 20px;
+            padding: 1.2rem;
             border: 1px solid rgba(255, 255, 255, 0.03);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
             transition: all 0.2s;
         }
 
         .card:hover {
             border-color: rgba(255, 255, 255, 0.1);
-            background: rgba(28, 34, 42, 0.9);
+            background: rgba(22, 28, 35, 0.9);
         }
 
         .stat-value {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 500;
             color: #f0f4fa;
-            margin: 0.5rem 0;
+            margin: 0.4rem 0;
             letter-spacing: -0.02em;
         }
 
         .stat-label {
             color: #8f9aad;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
         /* Блок формул с радужным свечением */
         .formula-block {
-            background: #0f1319;
-            border-radius: 24px;
-            padding: 2rem;
-            margin: 2rem 0;
-            border: 1px solid #2c323b;
-            font-size: 1.1rem;
+            background: #0a0e14;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #2a303a;
+            font-size: 1rem;
             overflow-x: auto;
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 0.8rem;
             position: relative;
         }
 
         .formula {
             font-family: 'Inter', monospace;
-            background: #1a1f27;
-            padding: 0.8rem 1.2rem;
-            border-radius: 18px;
+            background: #141a22;
+            padding: 0.6rem 1rem;
+            border-radius: 16px;
             display: inline-block;
-            margin: 0.3rem 0;
+            margin: 0.2rem 0;
             color: #b4c2d9;
-            border: 1px solid #2f3742;
+            border: 1px solid #2a323e;
             cursor: pointer;
             position: relative;
             transition: all 0.2s;
             flex: 0 1 auto;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            box-shadow: 0 0 8px rgba(0,0,0,0.3);
+            font-size: 0.95rem;
         }
 
         /* Радужное свечение при наведении на формулу */
@@ -309,26 +316,28 @@
             100% { box-shadow: 0 0 5px #ff69b4, 0 0 10px #ff416c, 0 0 15px #ff416c; }
         }
 
-        /* Всплывающее окно-подсказка */
+        /* Всплывающее окно-подсказка - улучшенное */
         .tooltip-popup {
             position: fixed;
             background: #1e2632;
             border: 1px solid #3d4a5c;
-            border-radius: 20px;
-            padding: 1.2rem;
-            max-width: 300px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
+            border-radius: 18px;
+            padding: 1rem 1.2rem;
+            max-width: 280px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,215,140,0.2) inset;
             color: #dbe1ec;
-            font-size: 0.95rem;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
+            font-size: 0.9rem;
+            z-index: 10000;
+            backdrop-filter: blur(12px);
             display: none;
             line-height: 1.5;
             animation: tooltip-appear 0.2s ease;
+            pointer-events: none;
+            border-left: 3px solid #ffb86b;
         }
 
         @keyframes tooltip-appear {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -337,63 +346,69 @@
         }
 
         .tooltip-popup h4 {
-            margin: 0 0 0.5rem 0;
+            margin: 0 0 0.4rem 0;
             color: #ffd78c;
             font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .tooltip-popup p {
+            margin: 0;
+            color: #cbd5e6;
         }
 
         /* Графики */
         .plots-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            margin: 2rem 0;
+            gap: 1.2rem;
+            margin: 1.5rem 0;
         }
 
         .plot-card {
-            background: #0f1319;
-            border-radius: 24px;
-            padding: 1.5rem;
-            border: 1px solid #2c323b;
+            background: #0a0e14;
+            border-radius: 20px;
+            padding: 1.2rem;
+            border: 1px solid #2a303a;
         }
 
         canvas {
             width: 100%;
             height: auto;
-            background: #11161d;
-            border-radius: 18px;
+            background: #0c1118;
+            border-radius: 16px;
             display: block;
-            margin-top: 1rem;
+            margin-top: 0.8rem;
         }
 
         .badge {
-            background: #252d38;
-            padding: 0.3rem 1rem;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            color: #bdc7d9;
-            border: 1px solid #3e4857;
+            background: #1f2732;
+            padding: 0.2rem 0.9rem;
+            border-radius: 36px;
+            font-size: 0.8rem;
+            color: #b0bcd0;
+            border: 1px solid #3a4455;
         }
 
         footer {
-            margin-top: 3rem;
+            margin-top: 2.5rem;
             text-align: center;
-            color: #6a7385;
-            font-size: 0.9rem;
+            color: #5f6b80;
+            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>📈 Регрессионный анализ</h1>
-    <p style="color: #9aa6b9;">Парная регрессия · Преобразование Фишера · Сравнение моделей</p>
+    <p style="color: #9aa6b9; font-size: 0.95rem;">Парная регрессия · Преобразование Фишера · Сравнение моделей</p>
 
     <!-- Панель ввода -->
     <div class="input-panel">
         <h3 style="margin-top: 0;">✏️ Введите значения Y (через запятую)</h3>
         <textarea id="yInput" rows="2">1.92, 2.40, 2.73, 3.23, 3.97, 5.08, 6.45, 8.13, 10.49, 12.04, 14.73</textarea>
         <button class="btn" id="analyzeBtn">Рассчитать</button>
-        <p style="color: #7b8599; margin-top: 0.8rem; font-size: 0.9rem;">🔹 X генерируется автоматически от 0 до n-1</p>
+        <p style="color: #7b8599; margin-top: 0.6rem; font-size: 0.85rem;">🔹 X генерируется автоматически от 0 до n-1</p>
     </div>
 
     <!-- Отображение формул с радужным свечением -->
@@ -401,10 +416,10 @@
     <div class="formula-block" id="formulaBlock">
         <div class="formula" data-formula="b1" data-title="Коэффициент регрессии b₁" data-desc="Показывает, на сколько единиц изменится Y при изменении X на одну единицу.">\( b_1 = r_{yx} \frac{S_y}{S_x} \)</div>
         <div class="formula" data-formula="b0" data-title="Свободный член b₀" data-desc="Значение Y при X = 0 (точка пересечения с осью Y).">\( b_0 = \bar{y} - b_1 \bar{x} \)</div>
-        <div class="formula" data-formula="r" data-title="Коэффициент корреляции r" data-desc="Мера линейной связи между X и Y. От -1 до 1.">\( r_{yx} = \frac{\overline{xy} - \bar{x}\bar{y}}{S_x S_y} \)</div>
-        <div class="formula" data-formula="fisher" data-title="Преобразование Фишера u" data-desc="Используется для проверки значимости корреляции при малых выборках.">\( u = \frac{1}{2} \ln \frac{1+|r|}{1-|r|} \)</div>
-        <div class="formula" data-formula="sigma" data-title="СКО преобразования Фишера" data-desc="Стандартная ошибка для u.">\( \sigma_u = \frac{1}{\sqrt{n-3}} \)</div>
-        <div class="formula" data-formula="criterion" data-title="Критерий значимости" data-desc="Если |u| > u_{1-α/2}·σ_u, связь статистически значима.">\( |u| > u_{1-\alpha/2} \cdot \sigma_u \)</div>
+        <div class="formula" data-formula="r" data-title="Коэффициент корреляции r" data-desc="Мера линейной связи между X и Y. От -1 до 1. Чем ближе к 1, тем сильнее связь.">\( r_{yx} = \frac{\overline{xy} - \bar{x}\bar{y}}{S_x S_y} \)</div>
+        <div class="formula" data-formula="fisher" data-title="Преобразование Фишера u" data-desc="Используется для проверки значимости корреляции при малых выборках (n < 50).">\( u = \frac{1}{2} \ln \frac{1+|r|}{1-|r|} \)</div>
+        <div class="formula" data-formula="sigma" data-title="СКО преобразования Фишера" data-desc="Стандартная ошибка для u. Зависит от объёма выборки.">\( \sigma_u = \frac{1}{\sqrt{n-3}} \)</div>
+        <div class="formula" data-formula="criterion" data-title="Критерий значимости" data-desc="Если |u| > u_{1-α/2}·σ_u, связь статистически значима (при α=0.05, u_{1-α/2}=1.96).">\( |u| > u_{1-\alpha/2} \cdot \sigma_u \)</div>
     </div>
 
     <!-- Основные результаты -->
@@ -451,68 +466,100 @@
         const equationsPanel = document.getElementById('equationsPanel');
         const analysisCard = document.getElementById('analysisCard');
 
-        // Всплывающие подсказки для формул - ИСПРАВЛЕНО
+        // ============ ИСПРАВЛЕННЫЙ КОД ДЛЯ ПОДСКАЗОК ============
         const formulaItems = document.querySelectorAll('.formula');
         const tooltip = document.getElementById('formulaTooltip');
-        let activeTooltip = null;
+        let activeTooltip = false;
+        let currentFormula = null;
 
         function hideTooltip() {
             tooltip.classList.remove('show');
-            activeTooltip = null;
+            activeTooltip = false;
+            currentFormula = null;
         }
 
-        function showTooltip(element, event) {
-            event.stopPropagation();
-            
-            const title = element.dataset.title || 'Формула';
-            const desc = element.dataset.desc || 'Нет описания';
+        function showTooltip(element) {
+            const title = element.getAttribute('data-title') || 'Формула';
+            const desc = element.getAttribute('data-desc') || 'Нет описания';
             
             document.getElementById('tooltipTitle').textContent = title;
             document.getElementById('tooltipDesc').textContent = desc;
             
             const rect = element.getBoundingClientRect();
-            const tooltipWidth = 300;
-            let left = rect.left + window.scrollX + 20;
-            let top = rect.bottom + window.scrollY + 10;
+            const tooltipWidth = 280;
             
-            // Проверяем, не выходит ли подсказка за правый край экрана
+            let left = rect.right + window.scrollX + 15;
+            let top = rect.top + window.scrollY + (rect.height / 2) - 40;
+            
+            // Корректировка, если выходит за правый край
             if (left + tooltipWidth > window.innerWidth - 20) {
-                left = rect.right - tooltipWidth - 20;
+                left = rect.left - tooltipWidth - 15;
+            }
+            
+            // Корректировка, если выходит за левый край
+            if (left < 10) {
+                left = 10;
+            }
+            
+            // Корректировка по вертикали
+            if (top < 10) {
+                top = 10;
+            }
+            if (top + 120 > window.innerHeight - 20) {
+                top = window.innerHeight - 140;
             }
             
             tooltip.style.left = left + 'px';
             tooltip.style.top = top + 'px';
             tooltip.classList.add('show');
-            activeTooltip = element;
+            activeTooltip = true;
+            currentFormula = element;
         }
 
+        // Обработчик клика на формулу
         formulaItems.forEach(item => {
-            item.addEventListener('click', (event) => {
+            item.addEventListener('click', function(event) {
                 event.preventDefault();
                 event.stopPropagation();
                 
-                // Если кликнули на ту же формулу, прячем подсказку
-                if (activeTooltip === item) {
+                // Если кликнули на ту же формулу и подсказка уже открыта - закрываем
+                if (currentFormula === this && tooltip.classList.contains('show')) {
                     hideTooltip();
                 } else {
-                    showTooltip(item, event);
+                    // Иначе показываем подсказку для этой формулы
+                    showTooltip(this);
                 }
             });
         });
 
-        // Закрытие подсказки при клике вне формул
-        document.addEventListener('click', (event) => {
+        // Закрытие при клике вне формул
+        document.addEventListener('click', function(event) {
             if (!event.target.classList.contains('formula')) {
                 hideTooltip();
             }
         });
 
-        // Закрытие подсказки при нажатии Escape
-        document.addEventListener('keydown', (event) => {
+        // Закрытие при нажатии Escape
+        document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 hideTooltip();
             }
         });
+
+        // Закрытие при скролле
+        window.addEventListener('scroll', function() {
+            if (activeTooltip) {
+                hideTooltip();
+            }
+        });
+
+        // Закрытие при изменении размера окна
+        window.addEventListener('resize', function() {
+            if (activeTooltip) {
+                hideTooltip();
+            }
+        });
+        // ============ КОНЕЦ ИСПРАВЛЕННОГО КОДА ============
 
         // Функция парсинга ввода
         function parseYInput(str) {
@@ -548,19 +595,17 @@
             const u = 0.5 * Math.log((1 + rAbs) / (1 - rAbs));
             const sigmaU = 1 / Math.sqrt(n - 3);
             const alpha = 0.05;
-            const uCritical = 1.96; // norm.ppf(0.975) ≈ 1.96
+            const uCritical = 1.96;
             const rightSide = uCritical * sigmaU;
             const significant = Math.abs(u) > rightSide;
 
             // Полиномы
-            // квадратичная (polyfit степени 2)
             const Xmat = x.map(xi => [1, xi, xi*xi]);
             const yVec = y;
-            const coeffsQuad = polyfit(Xmat, yVec); // [a0, a1, a2] для a0 + a1*x + a2*x^2
+            const coeffsQuad = polyfit(Xmat, yVec);
 
-            // кубическая (степень 3)
             const XmatCubic = x.map(xi => [1, xi, xi*xi, xi*xi*xi]);
-            const coeffsCubic = polyfit(XmatCubic, yVec); // [a0, a1, a2, a3]
+            const coeffsCubic = polyfit(XmatCubic, yVec);
 
             // R²
             const yPredLinear = x.map(xi => b0 + b1 * xi);
@@ -583,13 +628,11 @@
             };
         }
 
-        // Простейшая полифит через псевдообратную (метод наименьших квадратов)
         function polyfit(Xmat, y) {
             const A = Xmat;
             const AT = A[0].map((_, i) => A.map(row => row[i]));
             const ATA = AT.map(row => row.map((_, j) => row.reduce((sum, _, k) => sum + row[k] * A[k][j], 0)));
             const ATy = AT.map(row => row.reduce((sum, _, i) => sum + row[i] * y[i], 0));
-            // Решение СЛАУ ATA * coeffs = ATy (метод Гаусса для простоты — для малых размерностей)
             return gaussElimination(ATA, ATy);
         }
 
@@ -615,26 +658,23 @@
             return x;
         }
 
-        // Отрисовка 4 графиков с Chart.js
         function renderPlots(data) {
             plotsContainer.innerHTML = '';
             const titles = ['а) Исходные данные', 'б) Линейная', 'в) Квадратичная', 'г) Кубическая'];
             for (let i = 0; i < 4; i++) {
                 const div = document.createElement('div');
                 div.className = 'plot-card';
-                div.innerHTML = `<h3 style="margin:0 0 0.5rem 0">${titles[i]}</h3><canvas id="chart${i}" width="400" height="300"></canvas>`;
+                div.innerHTML = `<h3 style="margin:0 0 0.5rem 0">${titles[i]}</h3><canvas id="chart${i}" width="400" height="280"></canvas>`;
                 plotsContainer.appendChild(div);
             }
 
-            // Исходные данные
             const ctx0 = document.getElementById('chart0').getContext('2d');
             new Chart(ctx0, {
                 type: 'scatter',
-                data: { datasets: [{ label: 'Исходные', data: data.x.map((x,i)=>({x, y:data.y[i]})), backgroundColor: '#7f8fa6', pointRadius: 6 }] },
+                data: { datasets: [{ label: 'Исходные', data: data.x.map((x,i)=>({x, y:data.y[i]})), backgroundColor: '#7f8fa6', pointRadius: 5 }] },
                 options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } }
             });
 
-            // Линейная
             const ctx1 = document.getElementById('chart1').getContext('2d');
             new Chart(ctx1, {
                 type: 'scatter',
@@ -647,7 +687,6 @@
                 options: { responsive: true }
             });
 
-            // Квадратичная
             const ctx2 = document.getElementById('chart2').getContext('2d');
             new Chart(ctx2, {
                 type: 'scatter',
@@ -659,7 +698,6 @@
                 }
             });
 
-            // Кубическая
             const ctx3 = document.getElementById('chart3').getContext('2d');
             new Chart(ctx3, {
                 type: 'scatter',
@@ -672,14 +710,12 @@
             });
         }
 
-        // Обновление интерфейса
         function updateUI() {
             try {
                 const y = parseYInput(yInput.value);
                 if (y.length < 3) throw new Error('Минимум 3 точки');
                 const data = calculate(y);
 
-                // Статистика
                 statsPanel.innerHTML = `
                     <div class="card"><div class="stat-label">n</div><div class="stat-value">${data.n}</div></div>
                     <div class="card"><div class="stat-label">x̄</div><div class="stat-value">${data.xMean.toFixed(3)}</div></div>
@@ -692,22 +728,20 @@
                     <div class="card"><div class="stat-label">Значимость</div><div class="stat-value">${data.significant ? '✅' : '❌'}</div></div>
                 `;
 
-                // Уравнения
                 equationsPanel.innerHTML = `
-                    <div class="card"><div class="stat-label">Линейная</div><div>y = ${data.b0.toFixed(3)} + ${data.b1.toFixed(3)}x</div><div>R² = ${data.r2Linear.toFixed(4)}</div></div>
-                    <div class="card"><div class="stat-label">Квадратичная</div><div>y = ${data.coeffsQuad[0].toFixed(3)} + ${data.coeffsQuad[1].toFixed(3)}x + ${data.coeffsQuad[2].toFixed(3)}x²</div><div>R² = ${data.r2Quad.toFixed(4)}</div></div>
-                    <div class="card"><div class="stat-label">Кубическая</div><div>y = ${data.coeffsCubic[0].toFixed(3)} + ${data.coeffsCubic[1].toFixed(3)}x + ${data.coeffsCubic[2].toFixed(3)}x² + ${data.coeffsCubic[3].toFixed(3)}x³</div><div>R² = ${data.r2Cubic.toFixed(4)}</div></div>
+                    <div class="card"><div class="stat-label">Линейная</div><div style="font-size:0.9rem">y = ${data.b0.toFixed(3)} + ${data.b1.toFixed(3)}x</div><div style="margin-top:0.3rem">R² = ${data.r2Linear.toFixed(4)}</div></div>
+                    <div class="card"><div class="stat-label">Квадратичная</div><div style="font-size:0.85rem">y = ${data.coeffsQuad[0].toFixed(3)} + ${data.coeffsQuad[1].toFixed(3)}x + ${data.coeffsQuad[2].toFixed(3)}x²</div><div style="margin-top:0.3rem">R² = ${data.r2Quad.toFixed(4)}</div></div>
+                    <div class="card"><div class="stat-label">Кубическая</div><div style="font-size:0.8rem">y = ${data.coeffsCubic[0].toFixed(3)} + ${data.coeffsCubic[1].toFixed(3)}x + ${data.coeffsCubic[2].toFixed(3)}x² + ${data.coeffsCubic[3].toFixed(3)}x³</div><div style="margin-top:0.3rem">R² = ${data.r2Cubic.toFixed(4)}</div></div>
                 `;
 
-                // Анализ улучшения
                 const impQuad = data.r2Quad - data.r2Linear;
                 const impCubic = data.r2Cubic - data.r2Linear;
                 analysisCard.innerHTML = `
                     <h3 style="margin-top:0">📌 Улучшение R²</h3>
-                    <p>ΔR² квадратичная: ${(impQuad*100).toFixed(2)}% &nbsp;&nbsp; ΔR² кубическая: ${(impCubic*100).toFixed(2)}%</p>
-                    <p>${impQuad < 0.01 ? '✅ Квадратичная модель даёт незначительное улучшение.' : '⚠️ Квадратичная модель заметно лучше.'}</p>
-                    <p>${impCubic < 0.01 ? '✅ Кубическая модель незначительно улучшает.' : '⚠️ Кубическая модель повышает точность, но сложнее.'}</p>
-                    <p style="color:#9aaec9">Вывод: ${data.r2Linear > 0.95 ? 'Линейная модель уже отличная.' : 'Стоит рассмотреть полиномы.'}</p>
+                    <p style="font-size:0.95rem">ΔR² квадратичная: ${(impQuad*100).toFixed(2)}% &nbsp;&nbsp; ΔR² кубическая: ${(impCubic*100).toFixed(2)}%</p>
+                    <p style="font-size:0.95rem">${impQuad < 0.01 ? '✅ Квадратичная модель даёт незначительное улучшение.' : '⚠️ Квадратичная модель заметно лучше.'}</p>
+                    <p style="font-size:0.95rem">${impCubic < 0.01 ? '✅ Кубическая модель незначительно улучшает.' : '⚠️ Кубическая модель повышает точность, но сложнее.'}</p>
+                    <p style="color:#9aaec9; font-size:0.95rem">Вывод: ${data.r2Linear > 0.95 ? 'Линейная модель уже отличная.' : 'Стоит рассмотреть полиномы.'}</p>
                 `;
 
                 renderPlots(data);
@@ -718,7 +752,7 @@
         }
 
         analyzeBtn.addEventListener('click', updateUI);
-        updateUI(); // первичный расчёт
+        updateUI();
     });
 </script>
 </body>
