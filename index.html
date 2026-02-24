@@ -293,7 +293,7 @@
             margin: 0.2rem 0;
             color: #b4c2d9;
             border: 1px solid #2a323e;
-            cursor: pointer;
+            cursor: help;
             position: relative;
             transition: all 0.2s;
             flex: 0 1 auto;
@@ -316,7 +316,7 @@
             100% { box-shadow: 0 0 5px #ff69b4, 0 0 10px #ff416c, 0 0 15px #ff416c; }
         }
 
-        /* Всплывающее окно-подсказка - улучшенное */
+        /* Всплывающее окно-подсказка - для hover */
         .tooltip-popup {
             position: fixed;
             background: #1e2632;
@@ -412,14 +412,14 @@
     </div>
 
     <!-- Отображение формул с радужным свечением -->
-    <h2>📐 Формулы (нажмите для пояснения)</h2>
+    <h2>📐 Формулы (наведите для пояснения)</h2>
     <div class="formula-block" id="formulaBlock">
-        <div class="formula" data-formula="b1" data-title="Коэффициент регрессии b₁" data-desc="Показывает, на сколько единиц изменится Y при изменении X на одну единицу.">\( b_1 = r_{yx} \frac{S_y}{S_x} \)</div>
-        <div class="formula" data-formula="b0" data-title="Свободный член b₀" data-desc="Значение Y при X = 0 (точка пересечения с осью Y).">\( b_0 = \bar{y} - b_1 \bar{x} \)</div>
-        <div class="formula" data-formula="r" data-title="Коэффициент корреляции r" data-desc="Мера линейной связи между X и Y. От -1 до 1. Чем ближе к 1, тем сильнее связь.">\( r_{yx} = \frac{\overline{xy} - \bar{x}\bar{y}}{S_x S_y} \)</div>
-        <div class="formula" data-formula="fisher" data-title="Преобразование Фишера u" data-desc="Используется для проверки значимости корреляции при малых выборках (n < 50).">\( u = \frac{1}{2} \ln \frac{1+|r|}{1-|r|} \)</div>
-        <div class="formula" data-formula="sigma" data-title="СКО преобразования Фишера" data-desc="Стандартная ошибка для u. Зависит от объёма выборки.">\( \sigma_u = \frac{1}{\sqrt{n-3}} \)</div>
-        <div class="formula" data-formula="criterion" data-title="Критерий значимости" data-desc="Если |u| > u_{1-α/2}·σ_u, связь статистически значима (при α=0.05, u_{1-α/2}=1.96).">\( |u| > u_{1-\alpha/2} \cdot \sigma_u \)</div>
+        <div class="formula" data-title="Коэффициент регрессии b₁" data-desc="Показывает, на сколько единиц изменится Y при изменении X на одну единицу.">\( b_1 = r_{yx} \frac{S_y}{S_x} \)</div>
+        <div class="formula" data-title="Свободный член b₀" data-desc="Значение Y при X = 0 (точка пересечения с осью Y).">\( b_0 = \bar{y} - b_1 \bar{x} \)</div>
+        <div class="formula" data-title="Коэффициент корреляции r" data-desc="Мера линейной связи между X и Y. От -1 до 1. Чем ближе к 1, тем сильнее связь.">\( r_{yx} = \frac{\overline{xy} - \bar{x}\bar{y}}{S_x S_y} \)</div>
+        <div class="formula" data-title="Преобразование Фишера u" data-desc="Используется для проверки значимости корреляции при малых выборках (n < 50).">\( u = \frac{1}{2} \ln \frac{1+|r|}{1-|r|} \)</div>
+        <div class="formula" data-title="СКО преобразования Фишера" data-desc="Стандартная ошибка для u. Зависит от объёма выборки.">\( \sigma_u = \frac{1}{\sqrt{n-3}} \)</div>
+        <div class="formula" data-title="Критерий значимости" data-desc="Если |u| > u_{1-α/2}·σ_u, связь статистически значима (при α=0.05, u_{1-α/2}=1.96).">\( |u| > u_{1-\alpha/2} \cdot \sigma_u \)</div>
     </div>
 
     <!-- Основные результаты -->
@@ -466,19 +466,23 @@
         const equationsPanel = document.getElementById('equationsPanel');
         const analysisCard = document.getElementById('analysisCard');
 
-        // ============ ИСПРАВЛЕННЫЙ КОД ДЛЯ ПОДСКАЗОК ============
+        // ============ ПОДСКАЗКИ ПРИ HOVER (НАВЕДЕНИИ) ============
         const formulaItems = document.querySelectorAll('.formula');
         const tooltip = document.getElementById('formulaTooltip');
-        let activeTooltip = false;
-        let currentFormula = null;
+        let hideTimeout = null;
+        let showTimeout = null;
 
         function hideTooltip() {
-            tooltip.classList.remove('show');
-            activeTooltip = false;
-            currentFormula = null;
+            if (hideTimeout) clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(() => {
+                tooltip.classList.remove('show');
+            }, 100); // Небольшая задержка перед скрытием
         }
 
         function showTooltip(element) {
+            if (showTimeout) clearTimeout(showTimeout);
+            if (hideTimeout) clearTimeout(hideTimeout);
+            
             const title = element.getAttribute('data-title') || 'Формула';
             const desc = element.getAttribute('data-desc') || 'Нет описания';
             
@@ -512,54 +516,51 @@
             tooltip.style.left = left + 'px';
             tooltip.style.top = top + 'px';
             tooltip.classList.add('show');
-            activeTooltip = true;
-            currentFormula = element;
         }
 
-        // Обработчик клика на формулу
+        // Обработчики для каждой формулы
         formulaItems.forEach(item => {
-            item.addEventListener('click', function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-                
-                // Если кликнули на ту же формулу и подсказка уже открыта - закрываем
-                if (currentFormula === this && tooltip.classList.contains('show')) {
-                    hideTooltip();
-                } else {
-                    // Иначе показываем подсказку для этой формулы
+            let hoverTimer;
+            
+            item.addEventListener('mouseenter', function() {
+                // Небольшая задержка перед показом (для плавности)
+                hoverTimer = setTimeout(() => {
                     showTooltip(this);
-                }
+                }, 200);
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                clearTimeout(hoverTimer);
+                hideTooltip();
             });
         });
 
-        // Закрытие при клике вне формул
-        document.addEventListener('click', function(event) {
-            if (!event.target.classList.contains('formula')) {
-                hideTooltip();
-            }
+        // Скрывать подсказку при уходе мыши с неё
+        tooltip.addEventListener('mouseenter', () => {
+            if (hideTimeout) clearTimeout(hideTimeout);
+        });
+        
+        tooltip.addEventListener('mouseleave', () => {
+            hideTooltip();
         });
 
         // Закрытие при нажатии Escape
-        document.addEventListener('keydown', function(event) {
+        document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') {
-                hideTooltip();
+                tooltip.classList.remove('show');
             }
         });
 
         // Закрытие при скролле
-        window.addEventListener('scroll', function() {
-            if (activeTooltip) {
-                hideTooltip();
-            }
+        window.addEventListener('scroll', () => {
+            tooltip.classList.remove('show');
         });
 
         // Закрытие при изменении размера окна
-        window.addEventListener('resize', function() {
-            if (activeTooltip) {
-                hideTooltip();
-            }
+        window.addEventListener('resize', () => {
+            tooltip.classList.remove('show');
         });
-        // ============ КОНЕЦ ИСПРАВЛЕННОГО КОДА ============
+        // ============ КОНЕЦ ПОДСКАЗОК ============
 
         // Функция парсинга ввода
         function parseYInput(str) {
